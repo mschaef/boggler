@@ -1,0 +1,291 @@
+#! /bin/sh
+# The next line is executed by /bin/sh, but not Tcl \
+exec wish -f $0 ${1+"$@"}
+
+################################################################
+# tkboggle - tk based boggle game
+# by Michael Schaeffer
+#
+# Revision History:
+# 12/31/1996 
+#  - File created
+# 6/2/1996
+#  
+################################################################
+
+################################################################
+# Global Paramaters/Options
+################################################################
+
+set version "v0.1"
+
+set default_font "-*-helvetica (scalable)-medium-r-*-*-40-*-*-*-*-*-*-*"
+set default_board_size 5
+set default_board_cell_size 60
+set default_scoring_table {0 0 0 0 1 2 3 5 11 22 33 44 55 66} 
+
+################################################################
+# Boggler interface routines and Boggle Logic
+################################################################
+
+proc generate_new_board {size} {
+    return [exec boggler -g -w -S$size]
+}
+
+proc solve_board {board} {
+    return [exec boggler --puzzle-file=- --dictionary-file=wordlist --solve << $board]
+}
+
+proc score_word {word scoring_table} {
+    return [lindex $scoring_table [string length $word]]
+}
+
+proc score_wordlist {list scoring_table} {
+    set scored_list ""
+    set total_score 0
+
+    foreach current_word $list {
+	set score [score_word $current_word $scoring_table]
+	incr total_score $score
+
+	lappend scored_list [list $current_word $score]
+    }
+
+    return [list $total_score $scored_list]
+}
+
+
+################################################################
+# The UI
+################################################################
+
+# Window Management Procs
+
+proc create_boggle_window {w} {
+    global version
+    global window_info
+    global default_font
+    global default_board_size
+    global default_board_cell_size
+    global default_scoring_table
+
+
+    set window_info($w,font) $default_font
+    set window_info($w,board_size) $default_board_size
+    set window_info($w,board_cell_size) $default_board_cell_size
+    set window_info($w,scoring_table) $default_scoring_table
+    set window_info($w,current_board) "none"
+
+    # Create the main window
+    toplevel $w
+    wm title $w "TkBoggle $version"
+    wm iconname $w "Boggle"
+
+    # Set up a toolbar across the top of the window
+    set tb $w.toolbar
+    frame $tb -relief flat -borderwidth 2
+    pack  $tb -side top -expand 0 -fill x -ipadx 2 -ipady 2
+
+    # Populate the toolbar with command buttons
+    button $tb.quit -text "Quit" -command "do_quit $w" -relief ridge
+    pack  $tb.quit -side left 
+
+    button $tb.genboard -text "Generate Board" -command "do_gen_board $w" \
+	-relief ridge
+    pack  $tb.genboard -side left
+
+    button $tb.scorewords -text "Score Words" -command "do_score_words $w" \
+	-relief ridge
+    pack  $tb.scorewords -side left
+
+    button $tb.solveboard -text "Solve Board" -command "do_solve_board $w" \
+	-relief ridge
+    pack  $tb.solveboard -side left 
+
+    button $tb.setoptions -text "Set Options" -command "do_set_options $w" \
+	-relief ridge
+    pack  $tb.setoptions -side left 
+
+    # Create the main window pane for the computer's list of words,
+    # scoring data, etc.
+    set mp $w.main
+    frame $mp
+    pack  $mp -side top -expand yes -fill both
+    
+    # Make a canvas to display the boggle board
+    canvas $mp.c -background white -relief raised -borderwidth 2
+    pack $mp.c -side left
+
+    # Create a list for the computer's word list
+    frame $mp.c_words 
+    pack $mp.c_words -side right -fill both -expand yes
+
+    label $mp.c_words.total_score -text "Total Board Points: N/A" -anchor w
+    pack $mp.c_words.total_score -side bottom -fill x
+
+    scrollbar $mp.c_words.scroll -command "$mp.c_words.list yview"
+    listbox $mp.c_words.list -yscroll "$mp.c_words.scroll set" 
+    pack $mp.c_words.scroll -side right -fill y
+    pack $mp.c_words.list -side left -expand yes -fill both
+
+    # Create a window pane for the user to enter thier pathetic attempt
+    # at a word list :-)
+    set usp $w.user
+    frame $usp
+    pack  $usp -side bottom -fill x
+
+    # The editable text for user words
+    text $usp.text -relief sunken -bd 2 -width 64 -height 8  \
+	-yscrollcommand "$usp.scroll set"
+    scrollbar $usp.scroll -command "$usp.text yview"
+    pack $usp.scroll -side right -fill y
+    pack $usp.text -expand yes -fill both
+
+    prepare_board $w
+}
+
+
+# Event Handlers
+
+proc do_quit {window} {
+    destroy $window
+    destroy .
+}
+
+proc do_gen_board {window} {
+    global window_info
+
+    set window_info($window,current_board) \
+	[generate_new_board $window_info($window,board_size)]
+
+    draw_board $window
+}
+
+proc do_solve_board {window} {
+    global window_info
+
+    set current_board $window_info($window,current_board)
+    set scoring_table $window_info($window,scoring_table)
+    set listbox $window.main.c_words.list
+    set total_score_label $window.main.c_words.total_score 
+
+    if {$current_board != "none"} {
+	set wordlist [solve_board $current_board]
+	set wordlist [score_wordlist $wordlist $scoring_table]
+
+	set total_score [lindex $wordlist 0]
+	set wordlist [lindex $wordlist 1]
+
+	$total_score_label configure -text "Total Board Points: $total_score"
+
+	$listbox delete 0 end
+	
+	foreach current_word $wordlist {
+	    set word [lindex $current_word 0]
+	    set score [lindex $current_word 1]
+
+	    $listbox insert end "$word ($score)"
+	}
+
+    } else {
+	msgbox "No board created"
+    }
+}
+
+proc do_score_words {window} {
+    global default_scoring_table
+
+    set total_score 0
+    set word_text [$window.user.text get 0.0 end]
+    $window.user.text delete 0.0 end
+
+    foreach current_word $word_text {
+	set score [score_word $current_word $default_scoring_table]
+	incr total_score $score
+
+	$window.user.text insert end "$current_word $score\n"
+    }
+
+    $window.user.text insert end "\n\nTotal Score: $total_score\n"
+}
+
+proc do_set_options {window} {
+    msgbox "Unimplemented feature"
+}
+
+# Utility Procs
+
+proc prepare_board { window } {
+    global window_info
+
+    set board_size $window_info($window,board_size)
+    set board_cell_size $window_info($window,board_cell_size)
+    set canvas $window.main.c
+    set canvas_size [expr $board_size * $board_cell_size]
+
+    $canvas configure \
+	-height $canvas_size \
+	-width $canvas_size
+
+    for {set i 0} {$i < $board_size} {incr i} {
+	$canvas create line \
+	    [expr $i * $board_cell_size] 0 \
+	    [expr $i * $board_cell_size] $canvas_size \
+	    -tags background
+	$canvas create line \
+	    0 [expr $i * $board_cell_size] \
+	    $canvas_size [expr $i * $board_cell_size] \
+	    -tags background 
+    }
+}
+
+proc draw_board { window } {
+    global window_info
+
+    set board [lindex $window_info($window,current_board) 0]
+
+    if {$board != "none"} {
+	set size [lindex $board 0]
+
+	set size_x [lindex $size 0]
+	set size_y [lindex $size 1]
+	
+	set board_data [lrange $board 1 end]
+
+	set cell_size $window_info($window,board_cell_size)
+	set half_cell_size [expr $cell_size /2]
+
+	set canvas $window.main.c
+  
+	$canvas delete board_text
+
+	for {set i 0} {$i < $size_y} {incr i} {
+	    set board_line [lindex $board_data $i]
+	    
+	    for {set j 0} {$j < $size_x} {incr j} {
+		set board_cell [lindex $board_line $j]
+
+		$canvas create text \
+		    [expr $half_cell_size + $j * $cell_size] \
+		    [expr $half_cell_size + $i * $cell_size] \
+		    -text $board_cell \
+		    -font $window_info($window,font) \
+		    -tags board_text
+	    }
+	}
+	
+    } else {
+	msgbox "Cannot Draw: No board created"
+    }
+}
+
+proc msgbox { message } {
+    tk_messageBox -title "TkBoggle Error" -message $message
+}
+
+################################################################
+# Startup code
+################################################################
+
+wm withdraw .
+create_boggle_window .bw
