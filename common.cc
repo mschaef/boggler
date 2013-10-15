@@ -28,7 +28,7 @@ void skip_whitespace(istream &i)
 {
   char ch = ' ';
 
-  while (ch == ' ' || ch == '\n' || ch == '\t')
+  while (ch == ' ' || ch == '\n' || ch == '\t' || ch == '\r')
     i.get(ch);
 
   i.putback(ch);
