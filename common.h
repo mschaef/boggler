@@ -11,12 +11,14 @@
 #define __COMMON_H
 
 #include <getopt.h>
-#include <iostream.h>
-#include <fstream.h>
+#include <iostream>
+#include <fstream>
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+
+using namespace std;
 
 const int FALSE = 0;
 const int TRUE = 1;

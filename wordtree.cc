@@ -201,7 +201,7 @@ wordtree::iterator wordtree::iterator::letter(char letter)
  *
  * Create a new wordtree node.
  **********************************************************************/
-wordtree::wt_node::wt_node(char ch, int is_word = FALSE)
+wordtree::wt_node::wt_node(char ch, int is_word /* = FALSE */)
 {
   _ch = ch;
   _is_word = is_word;
@@ -291,7 +291,7 @@ istream &operator>>(istream &i, wordtree &wt)
   return i;
 
 failed_read:
-  i.set(ios::failbit);
+  i.clear(ios::failbit);
   return i;
 };
 

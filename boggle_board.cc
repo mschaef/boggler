@@ -309,7 +309,7 @@ istream &operator >>(istream &i, boggle_board &board) {
   return i;
 
 failed_read:
-  i.set(ios::failbit);
+  i.clear(ios::failbit);
   return i;
 }
 

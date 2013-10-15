@@ -55,29 +55,29 @@ option long_options[] = {
 };
 
 // The text displayed for command line help
-char help_text[] = "\
-Boggler v0.1
-by Michael Schaeffer
-
-Usage: boggler [options]
-
-Options:
-
---dictionary-file=<filename> (-d)  - Load a dictionary file
---puzzle-file=<filename> (-p) - Load a boggle from disk
---ignore-file=<filename> (-i) - Load a list of words to ignore in scoring
-
-If <filename> is -, read from standard input.  If more than one such
-file is specified, they are read in the order dictionary, puzzle,
-ignore
-
---generate (-g) - Generate a boggle puzzle randomly
---solve (-s) - Solve the boggle puzzle
---score (-c) - Generate scoring information
---location (-l) - Generate word location information
---write-puzzle (-w) - Write the puzzle to standard output
-
---size=<size> (-S) - Set the size of the boggle puzzle board\n
+char help_text[] = "\n\
+Boggler v0.1\n\
+by Michael Schaeffer\n\
+\n\
+Usage: boggler [options]\n\
+\n\
+Options:\n\
+\n\
+--dictionary-file=<filename> (-d)  - Load a dictionary file\n\
+--puzzle-file=<filename> (-p) - Load a boggle from disk\n\
+--ignore-file=<filename> (-i) - Load a list of words to ignore in scoring\n\
+\n\
+If <filename> is -, read from standard input.  If more than one such\n\
+file is specified, they are read in the order dictionary, puzzle,\n\
+ignore\n\
+\n\
+--generate (-g) - Generate a boggle puzzle randomly\n\
+--solve (-s) - Solve the boggle puzzle\n\
+--score (-c) - Generate scoring information\n\
+--location (-l) - Generate word location information\n\
+--write-puzzle (-w) - Write the puzzle to standard output\n\
+\n\
+--size=<size> (-S) - Set the size of the boggle puzzle board\n\
 --random-seed=<number> (-r) - Set the seed value for rand()";
 
 /****************************************************************
