@@ -16,7 +16,7 @@
 // Boggle Cube definitions.  These strings contain the letters
 // present on a set of boggle cubes.  Each string represents one
 // cube.
-char *boggle_cubes [] = {
+const char *boggle_cubes [] = {
   "hdtnho", "tnuwoo", "nssseu", "aemeee", "asarfi",
   "swctnc", "mteott", "qbzjkx", "namgne", "aafars",
   "noldhr", "tetiii", "londdr", "fsyria", "tilcei",

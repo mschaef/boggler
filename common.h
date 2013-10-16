@@ -31,8 +31,8 @@ int limited_random(int);
 void skip_whitespace(istream &);
 int expect(istream &, char);
 
-void message(char *prefix, char *msg);
-void error(char *msg);
-void warn(char *msg);
+void message(const char *prefix, const char *msg);
+void error(const char *msg);
+void warn(const char *msg);
 
 #endif

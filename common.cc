@@ -57,7 +57,8 @@ int expect(istream &i, char ch_expected)
  *
  * Write a prefixed message out to cerr
  ****************************************************************/
-void message(char *prefix, char *msg){
+void message(const char *prefix, const char *msg)
+{
   cerr << prefix << msg << '\n';
 }
 
@@ -66,7 +67,7 @@ void message(char *prefix, char *msg){
  *
  * Issue a fatal error message and abort
  ****************************************************************/
-void error(char *msg)
+void error(const char *msg)
 {
   message("Error: ", msg);
   exit(1);
@@ -77,7 +78,7 @@ void error(char *msg)
  *
  * Issue a warning message
  ****************************************************************/
-void warn(char *msg)
+void warn(const char *msg)
 {
   message("Warning: ", msg);
 }
