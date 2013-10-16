@@ -28,9 +28,7 @@ int ignore_stdin   = FALSE;    // ignore list stdin read flag
 
 int generate       = FALSE;    // action flag to generate the puzzle
 int solve          = FALSE;    // action flag to solve the puzzle
-int score          = FALSE;    // solve flag to score the final solution
-int location       = FALSE;    // solve flag to add location data to 
-                               // the final solution
+
 int help           = FALSE;    // display help information
 int write_puzzle   = FALSE;    // write the final puzzle
 
@@ -46,8 +44,6 @@ option long_options[] = {
   {"generate", 0, 0, 'g'},
   {"solve", 0, 0, 's'},
   {"write-puzzle", 0, 0, 'w'},
-  {"score", 0, 0, 'c'},
-  {"location", 0, 0, 'l'},
   {"size", 1, 0, 'S'},
   {"random-seed", 1, 0, 'r'},
   {"help", 0, 0, 'h'},
@@ -73,8 +69,6 @@ ignore\n\
 \n\
 --generate (-g) - Generate a boggle puzzle randomly\n\
 --solve (-s) - Solve the boggle puzzle\n\
---score (-c) - Generate scoring information\n\
---location (-l) - Generate word location information\n\
 --write-puzzle (-w) - Write the puzzle to standard output\n\
 \n\
 --size=<size> (-S) - Set the size of the boggle puzzle board\n\
@@ -93,7 +87,7 @@ void parse_options(int argc, char *argv[])
 
   while(optind < argc) {
     int option_index = 0;
-    char option = getopt_long(argc, argv, "d:p:i:gsS:clhr:w",
+    char option = getopt_long(argc, argv, "d:p:i:gsS:hr:w",
 			      long_options, &option_index);
 
     switch(option) {
@@ -161,16 +155,6 @@ void parse_options(int argc, char *argv[])
 
     case 'w':
       write_puzzle = TRUE;
-      break;
-
-    case 'c':
-      warn("Scoring not implemented yet");
-      score = TRUE;
-      break;
-
-    case 'l':
-      warn("Location not implemented yet");
-      location = TRUE;
       break;
 
       break;
