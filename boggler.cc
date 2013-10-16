@@ -193,82 +193,79 @@ int read_from_stream(istream &i, T &object)
  ****************************************************************/
 void do_command()
 {
-  // If the user asked for help, that's all we do
-  if(help)
-      cout << help_text << endl;
-  else {
-    int status;
-    wordtree dictionary;
-    wordtree results;
-    boggle_board b;
+     if (help) {
+          cout << help_text << endl;
+          return;
+     }
+
+     int status;
+     wordtree dictionary;
+     wordtree results;
+     boggle_board b;
     
-    // Initalize the random number generator
-    if (seed == -1)
-      srand(time(0));
-    else
-      srand(seed);
+     // Initalize the random number generator
+     srand((seed == -1) ? time(0) : seed);
 
-    // Initialize the dictionary file
-    if (dict_file) {
-      if (dict_stdin)
-	status = read_from_stream(cin, dictionary);
-      else {
-	ifstream i(dict_file);
-	status = read_from_stream(i, dictionary);
-      }
-
-      if (status)
-	error("Error reading dictionary file");
-    }
-
-
-    // Initialize the puzzle board
-    if (generate) {
-      b.set_size(size);
-      b.shuffle();
-
-    } else if (puzzle_file) {
-      if (puzzle_stdin)
-	status = read_from_stream(cin, b);
-      else {
-	ifstream i(puzzle_file);
-	status = read_from_stream(i, b);
-      }
+     // Generate or load a puzzle board.
+     if (generate) {
+          b.set_size(size);
+          b.shuffle();
+     } else if (puzzle_file) {
+          if (puzzle_stdin)
+               status = read_from_stream(cin, b);
+          else {
+               ifstream i(puzzle_file);
+               status = read_from_stream(i, b);
+          }
       
-      if (status)
-	error("Error reading puzzle file");
+          if (status)
+               error("Error reading puzzle file");
 
-    } else
-      warn("No valid puzzle specified");
+     } else
+          warn("No valid puzzle specified"); 
 
-    
-    // Output the puzzle if the user so desires
-    if (write_puzzle)
-      cout << b << endl;
-    
-    // Solve the puzzle
-    if (solve) {
-      wordtree ignored_words;
 
-      if (ignore_file) {
-	if (ignore_stdin)
-	  status = read_from_stream(cin, ignored_words);
-	else {
-	  ifstream i(puzzle_file);
-	  status = read_from_stream(i, ignored_words);
-	}
+     // write the puzzle board in use.
+     if (write_puzzle)
+          cout << b << endl;
+
+     // Solve the puzzle board, if requested.
+
+     if (solve) {
+          // Initialize the dictionary file
+          if (dict_file) {
+               if (dict_stdin)
+                    status = read_from_stream(cin, dictionary);
+               else {
+                    ifstream i(dict_file);
+                    status = read_from_stream(i, dictionary);
+               }
+
+               if (status)
+                    error("Error reading dictionary file");
+          }
+          
+          wordtree ignored_words;
+
+          if (ignore_file) {
+               if (ignore_stdin)
+                    status = read_from_stream(cin, ignored_words);
+               else {
+                    ifstream i(puzzle_file);
+                    status = read_from_stream(i, ignored_words);
+               }
 	
-	if (status)
-	  error("Error reading puzzle file");
-	else {
-	  dictionary.delete_words(ignored_words);
-	}
-      } 
+               if (status)
+                    error("Error reading puzzle file");
+               else {
+                    dictionary.delete_words(ignored_words);
+               }
+          } 
 
-      b.find_words(dictionary, results);
-      cout << results << endl;
-    }
-  }
+          b.find_words(dictionary, results);
+
+          cout << results << endl;
+     }
 }
 
 /****************************************************************
