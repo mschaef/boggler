@@ -18,7 +18,6 @@
 #include "boggler.h"
 
 char *dict_file    = NULL;     // The dictionary file to read
-int dict_stdin     = FALSE;    // dictionary stdin read flag
 
 char *puzzle_file  = NULL;     // The puzzle file to read
 int puzzle_stdin   = FALSE;    // puzzle stdin read flag
@@ -94,9 +93,6 @@ void parse_options(int argc, char *argv[])
     case 'd':
       if (dict_file)
 	error("Two dictionary files cannot be specified");
-
-      if (!strcmp(optarg, "-"))
-	dict_stdin = TRUE;
 
       dict_file = strdup(optarg);
       break;
@@ -234,13 +230,10 @@ void do_command()
      if (solve) {
           // Initialize the dictionary file
           if (dict_file) {
-               if (dict_stdin)
-                    status = read_from_stream(cin, dictionary);
-               else {
-                    ifstream i(dict_file);
-                    status = read_from_stream(i, dictionary);
-               }
+               ifstream i(dict_file);
 
+               status = read_from_stream(i, dictionary);
+               
                if (status)
                     error("Error reading dictionary file");
           }
