@@ -23,7 +23,7 @@ using namespace std;
 const int FALSE = 0;
 const int TRUE = 1;
 
-const int MAX_WORD_SIZE = 10;
+const int MAX_WORD_SIZE = 32;
 const int PREFIX_BUF_SIZE = 32;
 
 int limited_random(int);

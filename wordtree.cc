@@ -289,7 +289,9 @@ istream &operator>>(istream &i, wordtree &wt)
 
     i.putback(ch);
     word_buf[index] = '\0';
-    wt.insert_word(word_buf);
+
+    if (index > 0)
+         wt.insert_word(word_buf);
   }
 
   return i;
