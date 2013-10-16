@@ -195,7 +195,7 @@ void do_command()
 {
   // If the user asked for help, that's all we do
   if(help)
-      cout << help_text << '\n';
+      cout << help_text << endl;
   else {
     int status;
     wordtree dictionary;
@@ -244,7 +244,7 @@ void do_command()
     
     // Output the puzzle if the user so desires
     if (write_puzzle)
-      cout << b << '\n';
+      cout << b << endl;
     
     // Solve the puzzle
     if (solve) {
@@ -266,7 +266,7 @@ void do_command()
       } 
 
       b.find_words(dictionary, results);
-      cout << results << '\n';
+      cout << results << endl;
     }
   }
 }

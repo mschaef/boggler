@@ -26,12 +26,14 @@ int limited_random(int limit)
  ****************************************************************/
 void skip_whitespace(istream &i)
 {
-  char ch = ' ';
+  for(;;) {
+       int ch = i.get();
 
-  while (ch == ' ' || ch == '\n' || ch == '\t' || ch == '\r')
-    i.get(ch);
-
-  i.putback(ch);
+       if (!isspace(ch)) {
+            i.putback(ch);
+            return;
+       }
+  }
 }
 
 
@@ -59,7 +61,7 @@ int expect(istream &i, char ch_expected)
  ****************************************************************/
 void message(const char *prefix, const char *msg)
 {
-  cerr << prefix << msg << '\n';
+  cerr << prefix << msg << endl;
 }
 
 /****************************************************************

@@ -237,7 +237,7 @@ void wordtree::wt_node::dump() {
     if (_child_node[ch - 'a'] != NULL)
       cout << ch << ", " << _child_node[ch - 'a'] << "; ";
 
-  cout << ")\n";
+  cout << ")" << endl;
 
   for(char ch = 'a'; ch <= 'z'; ch++)
     if (_child_node[ch - 'a'] != NULL) 
