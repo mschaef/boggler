@@ -252,9 +252,13 @@ void wordtree::wt_node::dump() {
  ****************************************************************/
 ostream &operator<<(ostream &o, wordtree &wt)
 {
-  wt.print(o, wordtree::iterator(wt));
+     o << "{";
 
-  return o;
+     wt.print(o, wordtree::iterator(wt));
+
+     o << "}";
+
+     return o;
 }
 
 /****************************************************************

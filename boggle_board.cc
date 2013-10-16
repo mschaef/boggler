@@ -250,21 +250,20 @@ void boggle_board::find_words(wordtree &dict,
  * Print out the contents of a boggle board.
  ****************************************************************/
 ostream &operator <<(ostream &o, boggle_board &board) {
-  cout << "{ {" << board.xsize() << ' ' << board.ysize() << "} ";
-  for(int i = 1; i <= board.xsize(); i++) {
-    cout << "{ ";
-    for(int j = 1; j <= board.ysize(); j++) {
-      o << board.ref(i,j);
-      if (j == board.ysize())
-	cout << "}";
-      else
-	cout << ' ';
-    }
-    cout << ' ';
-  }
-  cout << '}';
+     cout << "{{" << board.xsize() << ' ' << board.ysize() << "}";
+     for(int i = 1; i <= board.xsize(); i++) {
+          cout << "{";
+          for(int j = 1; j <= board.ysize(); j++) {
+               o << board.ref(i,j);
+               if (j == board.ysize())
+                    cout << "}";
+               else
+                    cout << ' ';
+          }
+     }
+     cout << '}';
 
-  return o;
+     return o;
 }
 
 /****************************************************************
