@@ -164,23 +164,21 @@ void parse_options(int argc, char *argv[])
 
 /****************************************************************
  * template<class T>
- * int read_from_stream(istream &, T &)
+ * int read_input(const char *filename, T &)
  *
- * Read an object from a stream, checking for failure
+ * Read an input object from either a file or standard input.
  ****************************************************************/
 template<class T>
-int read_from_stream(istream &i, T &object)
+bool read_input(const char *fn,  T &object)
 {
-  if (i.eof() || i.fail() || i.bad())
-    return TRUE;
+     if (strcmp(fn, "-") == 0)
+          return (cin >> object);
 
-  i >> object;
+     ifstream in(fn);
 
-  if (i.eof() || i.fail() || i.bad())
-    return TRUE;
-
-  return FALSE;
+     return in >> object;
 }
+
 
 /****************************************************************
  * void do_command()
@@ -194,7 +192,6 @@ void do_command()
           return;
      }
 
-     int status;
      wordtree dictionary;
      wordtree results;
      boggle_board b;
@@ -207,14 +204,8 @@ void do_command()
           b.set_size(size);
           b.shuffle();
      } else if (puzzle_file) {
-          if (puzzle_stdin)
-               status = read_from_stream(cin, b);
-          else {
-               ifstream i(puzzle_file);
-               status = read_from_stream(i, b);
-          }
-      
-          if (status)
+
+          if (!read_input(puzzle_file, b))
                error("Error reading puzzle file");
 
      } else
@@ -230,25 +221,14 @@ void do_command()
      if (solve) {
           // Initialize the dictionary file
           if (dict_file) {
-               ifstream i(dict_file);
-
-               status = read_from_stream(i, dictionary);
-               
-               if (status)
+               if (!read_input(dict_file, dictionary))
                     error("Error reading dictionary file");
           }
           
           wordtree ignored_words;
 
           if (ignore_file) {
-               if (ignore_stdin)
-                    status = read_from_stream(cin, ignored_words);
-               else {
-                    ifstream i(puzzle_file);
-                    status = read_from_stream(i, ignored_words);
-               }
-	
-               if (status)
+               if (!read_input(ignore_file, ignored_words))
                     error("Error reading puzzle file");
                else {
                     dictionary.delete_words(ignored_words);
