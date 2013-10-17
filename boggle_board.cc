@@ -3,7 +3,9 @@
  * by Michael Schaeffer
  */
 
-#include "boggler.h"
+#include "common.h"
+#include "wordtree.h"
+#include "boggle_board.h"
 
 /* Boggle Cube definitions.  These strings contain the letters
  * present on a set of boggle cubes.  Each string represents one

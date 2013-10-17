@@ -4,7 +4,7 @@ FLAGS	= -Wall -DLINUX -g
 CC	= g++
 CFLAGS	= 
 
-HDRS	= boggle_board.h wordtree.h common.h boggler.h
+HDRS	= boggle_board.h wordtree.h common.h
 OTHERS	= Makefile
 OBJS	= boggle_board.o wordtree.o common.o boggler.o
 

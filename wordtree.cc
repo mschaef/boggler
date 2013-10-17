@@ -3,7 +3,8 @@
  * by Michael Schaeffer
  */
 
-#include "boggler.h"
+#include "common.h"
+#include "wordtree.h"
 
 /****************************************************************
  * wordtree::insert_word(char *)

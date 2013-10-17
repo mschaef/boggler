@@ -6,7 +6,9 @@
 #ifndef __BOGGLE_BOARD_H
 #define __BOGGLE_BOARD_H
 
-#include "boggler.h"
+#include "common.h"
+#include "wordtree.h"
+#include "boggle_board.h"
 
 class boggle_board {
 public:

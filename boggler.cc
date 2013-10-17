@@ -3,7 +3,9 @@
  * by Michael Schaeffer
  */
 
-#include "boggler.h"
+#include "common.h"
+#include "wordtree.h"
+#include "boggle_board.h"
 
 char *solution_dict_file = NULL;     // The dictionary file to read
 char *puzzle_file        = NULL;     // The puzzle file to read
