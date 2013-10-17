@@ -169,14 +169,20 @@ void parse_options(int argc, char *argv[])
  * Read an input object from either a file or standard input.
  ****************************************************************/
 template<class T>
-bool read_input(const char *fn,  T &object)
+void read_input(const char *fn,  T &object, const char *filedesc)
 {
-     if (strcmp(fn, "-") == 0)
-          return (cin >> object);
+     bool ok;
 
-     ifstream in(fn);
+     if (strcmp(fn, "-") == 0) {
+          ok = (cin >> object);
+     } else {
+          ifstream in(fn);
 
-     return in >> object;
+          ok = (in >> object);
+     }
+
+     if (!ok)
+          error("Error reading file.");
 }
 
 
@@ -204,10 +210,7 @@ void do_command()
           b.set_size(size);
           b.shuffle();
      } else if (puzzle_file) {
-
-          if (!read_input(puzzle_file, b))
-               error("Error reading puzzle file");
-
+          read_input(puzzle_file, b, "puzzle file");
      } else
           warn("No valid puzzle specified"); 
 
@@ -219,20 +222,15 @@ void do_command()
      // Solve the puzzle board, if requested.
 
      if (solve) {
-          // Initialize the dictionary file
-          if (dict_file) {
-               if (!read_input(dict_file, dictionary))
-                    error("Error reading dictionary file");
-          }
-          
+          if (dict_file)
+               read_input(dict_file, dictionary, "dictionary file");
+
           wordtree ignored_words;
 
           if (ignore_file) {
-               if (!read_input(ignore_file, ignored_words))
-                    error("Error reading puzzle file");
-               else {
-                    dictionary.delete_words(ignored_words);
-               }
+               read_input(ignore_file, ignored_words, "puzzle file");
+
+               dictionary.delete_words(ignored_words);
           } 
 
           b.find_words(dictionary, results);
