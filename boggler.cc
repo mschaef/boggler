@@ -18,12 +18,8 @@
 #include "boggler.h"
 
 char *dict_file    = NULL;     // The dictionary file to read
-
 char *puzzle_file  = NULL;     // The puzzle file to read
-int puzzle_stdin   = FALSE;    // puzzle stdin read flag
-
 char *ignore_file  = NULL;     // The file containing words to ignore
-int ignore_stdin   = FALSE;    // ignore list stdin read flag
 
 int generate       = FALSE;    // action flag to generate the puzzle
 int solve          = FALSE;    // action flag to solve the puzzle
@@ -104,18 +100,12 @@ void parse_options(int argc, char *argv[])
       if (generate)
     	warn("The specified puzzle file will be ignored");
 
-      if (!strcmp(optarg, "-"))
-	puzzle_stdin = TRUE;
-
       puzzle_file = strdup(optarg);
       break;
 
     case 'i':
       if (ignore_file)
 	error("Two ignore files cannot be specified");
-
-      if (!strcmp(optarg, "-"))
-	ignore_stdin = TRUE;
 
       ignore_file = strdup(optarg);
       break;
@@ -198,30 +188,30 @@ void do_command()
           return;
      }
 
-     wordtree dictionary;
-     wordtree results;
-     boggle_board b;
+     boggle_board board;
     
      // Initalize the random number generator
      srand((seed == -1) ? time(0) : seed);
 
      // Generate or load a puzzle board.
      if (generate) {
-          b.set_size(size);
-          b.shuffle();
+          board.set_size(size);
+          board.shuffle();
      } else if (puzzle_file) {
-          read_input(puzzle_file, b, "puzzle file");
+          read_input(puzzle_file, board, "puzzle file");
      } else
           warn("No valid puzzle specified"); 
 
-
      // write the puzzle board in use.
      if (write_puzzle)
-          cout << b << endl;
+          cout << board << endl;
 
      // Solve the puzzle board, if requested.
 
      if (solve) {
+          wordtree dictionary;
+          wordtree results;
+
           if (dict_file)
                read_input(dict_file, dictionary, "dictionary file");
 
@@ -233,7 +223,7 @@ void do_command()
                dictionary.delete_words(ignored_words);
           } 
 
-          b.find_words(dictionary, results);
+          board.find_words(dictionary, results);
 
           cout << results << endl;
      }
