@@ -1,19 +1,7 @@
-/****************************************************************
+/*
  * boggler.cc - Boggler main source file
  * by Michael Schaeffer
- *
- * Revision History:
- * 8/1/1996
- *   - File created
- * 12/28/1996 
- *   - Extensive modifications for correctness
- * 12/31/1996 
- *   - Moved all I/O to class defn files
- * 1/2/1997 
- *   - Incorporated getopt_long to parse command line options
- *   - Built driver program for CLI
- *   - Changed to multiline format for revision history :)
- ****************************************************************/
+ */
 
 #include "boggler.h"
 
@@ -21,10 +9,9 @@ char *solution_dict_file = NULL;     // The dictionary file to read
 char *puzzle_file        = NULL;     // The puzzle file to read
 char *ignore_file        = NULL;     // The file containing words to ignore
 
-int generate             = FALSE;    // action flag to generate the puzzle
-
-int help                 = FALSE;    // display help information
-int write_puzzle         = FALSE;    // write the final puzzle
+bool generate            = false;    // action flag to generate the puzzle
+bool help                = false;    // display help information
+bool write_puzzle        = false;    // write the final puzzle
 
 int size                 = 5;        // The size of the puzzle to be generated
 
@@ -111,7 +98,7 @@ void parse_options(int argc, char *argv[])
       if (puzzle_file)
 	warn("The specified puzzle file will be ignored");
 
-      generate = TRUE;
+      generate = true;
       break;
 
     case 'S':
@@ -133,12 +120,12 @@ void parse_options(int argc, char *argv[])
       break;
 
     case 'w':
-      write_puzzle = TRUE;
+      write_puzzle = true;
       break;
 
       break;
     case 'h':
-      help = TRUE;
+      help = true;
 
       break;
     }

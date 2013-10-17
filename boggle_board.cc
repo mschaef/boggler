@@ -1,21 +1,14 @@
-/****************************************************************
- * wordtree.cc - wordtree source file
+/*
+ * boggle_board.cc - A mutable representation of a game board.
  * by Michael Schaeffer
- *
- * Revision History:
- * 8/1/1996 
- *   - File created
- * 12/28/1996 
- *   - Extensive modifications for correctness
- *   - Added delete_words function
- ****************************************************************/
+ */
 
 #include "boggler.h"
 
-
-// Boggle Cube definitions.  These strings contain the letters
-// present on a set of boggle cubes.  Each string represents one
-// cube.
+/* Boggle Cube definitions.  These strings contain the letters
+ * present on a set of boggle cubes.  Each string represents one
+ * cube.
+ */
 const char *boggle_cubes [] = {
   "hdtnho", "tnuwoo", "nssseu", "aemeee", "asarfi",
   "swctnc", "mteott", "qbzjkx", "namgne", "aafars",
@@ -24,11 +17,7 @@ const char *boggle_cubes [] = {
   "mgaeeu", "toutoo", "spriyf", "rlhhod", "gworru" 
 };
 
-/****************************************************************
- * boggle_board::boggle_board()
- * 
- * Build a new boggle board
- ****************************************************************/
+
 boggle_board::boggle_board() {
   _board = NULL;
   _marks = NULL;
@@ -36,31 +25,18 @@ boggle_board::boggle_board() {
   set_size(5);
 }
 
-/****************************************************************
- * boggle_board::~boggle_board
- * 
- * Delete any dynamic memory allocated by the boggle board
- * used to store the board
- ****************************************************************/
 boggle_board::~boggle_board() {
   delete _board;
   delete _marks;
 }
 
-/****************************************************************
- * void boggle_board::set_size(int)
- * 
- * Set up the board arrays from the specified dimensions
- ****************************************************************/
 void boggle_board::set_size(int size) {
   set_size(size, size);
 }
 
-/****************************************************************
- * void boggle_board::set_size(int, int)
- * 
- * Set up the board arrays from the specified dimensions
- ****************************************************************/
+/*
+ * Reset the board to the specified size.
+ */
 void boggle_board::set_size(int xsize, int ysize) {
   int i, j;
 
@@ -71,7 +47,7 @@ void boggle_board::set_size(int xsize, int ysize) {
   _ysize = ysize;
 
   _board = new char[(_xsize + 2) * (_ysize + 2)];
-  _marks = new int[(_xsize + 2) * (_ysize + 2)];
+  _marks = new bool[(_xsize + 2) * (_ysize + 2)];
 
   for(i = 0; i < _xsize + 2; i++)
     for(j = 0; j < _ysize + 2; j++) {
@@ -90,7 +66,7 @@ void boggle_board::set_size(int xsize, int ysize) {
   }
 }
 
-/****************************************************************
+/*
  * void boggle_board::shuffle()
  * 
  * This routine doesn't shuffle the board, per se, but rather
@@ -98,13 +74,13 @@ void boggle_board::set_size(int xsize, int ysize) {
  * boggle_cubes. If there are more than 25 cells that need to
  * be initialized, it switches to a standard random letter
  * algorithm.
- ****************************************************************/
+ */
 void boggle_board::shuffle() {
   if (_xsize * _ysize <= 25) {
-    int cube_used[25];
+       bool cube_used[25];
 
     for(int i = 0; i < 25; i++)
-      cube_used[i] = FALSE;
+         cube_used[i] = false;
 
     for(int i = 1; i <= _xsize; i++)
       for(int j = 1; j <= _ysize; j++) {
@@ -114,7 +90,7 @@ void boggle_board::shuffle() {
 
 	  if (!cube_used[cube]) {
 	    set(i, j, boggle_cubes[cube][limited_random(6)]);
-	  cube_used[cube] = TRUE;
+        cube_used[cube] = true;
 	  break;
 	  }
 	}
@@ -126,84 +102,45 @@ void boggle_board::shuffle() {
   }
 }
 
-/****************************************************************
- * char boggle_board::ref(int x, int y);
- * 
- * Determine the contents of a given block.
- ****************************************************************/
+
 char boggle_board::ref(int x, int y) {
   assert((x >= 0) && (x <= _xsize + 1) && (y >= 0) && (y <= _ysize + 1));
   return _board[x + y * _xsize];
 }
 
-/****************************************************************
- * char boggle_board::set(int x, int y, char ch);
- * 
- * Set the contents of a given block.
- ****************************************************************/
 void boggle_board::set(int x, int y, char ch) {
   assert((x >= 0) && (x <= _xsize + 1) && (y >= 0) && (y <= _ysize + 1));
   _board[x + y * _xsize] = ch;
 }
 
-/****************************************************************
- * int boggle_board::is_marked(int x, int y)
- * 
- * Determine is a board block is marked
- ****************************************************************/
-int boggle_board::is_marked(int x, int y) {
+bool boggle_board::is_marked(int x, int y) {
   assert((x >= 0) && (x <= _xsize + 1) && (y >= 0) && (y <= _ysize + 1));
   return _marks[x + y * _xsize];
 };
 
-/****************************************************************
- * void boggle_board::mark(int x, int y)
- * 
- * Mark a board block as used
- ****************************************************************/
 void boggle_board::mark(int x, int y) {
   assert((x >= 0) && (x <= _xsize + 1) && (y >= 0) && (y <= _ysize + 1));
-  _marks[x + y * _xsize] = TRUE;
+  _marks[x + y * _xsize] = true;
 };
 
-/****************************************************************
- * void boggle_board::unmark(int x, int y)
- * 
- * Mark a block as unused.
- ****************************************************************/
 void boggle_board::unmark(int x, int y) {
   assert((x >= 0) && (x <= _xsize + 1) && (y >= 0) && (y <= _ysize + 1));
-  _marks[x + y * _xsize] = FALSE;
+  _marks[x + y * _xsize] = false;
 };
 
-/****************************************************************
- * int boggle_board::xsize()
- * 
- * Return the xsize of a boggle board
- ****************************************************************/
 int boggle_board::xsize() {
   return _xsize;
 };
 
-/****************************************************************
- * int boggle_board::ysize()
- * 
- * Return the ysize of a boggle board
- ****************************************************************/
 int boggle_board::ysize() {
   return _ysize;
 };
 
-/****************************************************************
- * boggle_board::find_words_at(int, int, wordtree::iterator, wordtree &);
- *
- * Find words in a boggle board, given a location in the board
- * and in the word tree (using an iterator for the word tree)
- ****************************************************************/
+/* Recursive step for breadth-first word search. */
 void boggle_board::find_words_at(int xloc,
-				 int yloc,
-				 wordtree::iterator wl_location,
-				 wordtree &words)
+                                 int yloc,
+                                 wordtree::iterator wl_location,
+                                 wordtree &words)
 {
   if (wl_location.is_word())
     words.insert_word(wl_location());
@@ -230,25 +167,19 @@ void boggle_board::find_words_at(int xloc,
   }
 };
 
-/****************************************************************
- * boggle_board::find_words(wordtree &, wordtree &)
- *
- * Find words in a boggle board by calling find_words_at for
- * each block in the board.
- ****************************************************************/
-void boggle_board::find_words(wordtree &dict,
-			      wordtree &found_words)
+/* Search the board for the words contained in 'dict', loading each
+ * found word into 'found_words'.
+ */
+void boggle_board::find_words(wordtree &dict, wordtree &found_words)
 {
   for (int xloc = 1; xloc <= _xsize; xloc++) 
     for (int yloc = 1; yloc <= _ysize; yloc++) 
       find_words_at(xloc, yloc, wordtree::iterator(dict), found_words);
 };
 
-/****************************************************************
- * ostream &operator <<(ostream &o, boggle_board &board)
- * 
- * Print out the contents of a boggle board.
- ****************************************************************/
+/**
+ * Write a board to the given ostream.
+ */
 ostream &operator <<(ostream &o, boggle_board &board) {
      cout << "{{" << board.xsize() << ' ' << board.ysize() << "}";
      for(int i = 1; i <= board.xsize(); i++) {
@@ -266,12 +197,11 @@ ostream &operator <<(ostream &o, boggle_board &board) {
      return o;
 }
 
-/****************************************************************
- * istream &operator >>(istream &i, boggle_board &board)
- * 
- * Read in a boggle board in standard form. If input stream is 
- * malformed, bail out and set ios::fail in i.
- ****************************************************************/
+/*
+ * Attempt to read a board from the given ostream. If there
+ * is a parse error, the read is immediately aborted, and the
+ * stream left in a bad state.
+ */
 istream &operator >>(istream &i, boggle_board &board) {
   int xsize, ysize;
   int xloc, yloc;

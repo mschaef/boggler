@@ -1,29 +1,18 @@
-/****************************************************************
+/*
  * common.cc - A set of commonly useful utility functions
  * by Michael Schaeffer
- *
- * Revision History:
- * 12/31/1996 - File created
- * 1/2/1997 - Added error handling routines
- ****************************************************************/
+ */
 
 #include "common.h"
 
-/****************************************************************
- * int limited_random(int)
- *
- * Produce a random integer in the range [0, limit)
- ****************************************************************/
+/* Produce a random integer in the range [0, limit) */
 int limited_random(int limit)
 {
   return (rand() % limit);
 }
 
-/****************************************************************
- * void skip_whitespace(istream &)
- *
- * Produce a random integer in the range [0, limit)
- ****************************************************************/
+/* Skip all whitespace on the input stream, leaving it positioned
+ * at the first non-whitespace character. */
 void skip_whitespace(istream &i)
 {
   for(;;) {
@@ -36,13 +25,8 @@ void skip_whitespace(istream &i)
   }
 }
 
-
-/****************************************************************
- * int expect(istream &, char)
- *
- * Return TRUE if the character was found on the stream. Destroys
- * the character
- ****************************************************************/
+/* Return TRUE if the character `ch_expected` was found on the stream. The
+ * character will be consumed. */
 int expect(istream &i, char ch_expected)
 {
   char ch;
@@ -52,35 +36,19 @@ int expect(istream &i, char ch_expected)
   return ch == ch_expected;
 }
 
-
-
-/****************************************************************
- * void message(char *, char*);
- *
- * Write a prefixed message out to cerr
- ****************************************************************/
 void message(const char *prefix, const char *msg)
 {
   cerr << prefix << msg << endl;
 }
 
-/****************************************************************
- * void error(char *);
- *
- * Issue a fatal error message and abort
- ****************************************************************/
 void error(const char *msg)
 {
-  message("Error: ", msg);
+  cerr << "Error: " << msg << endl;
+
   exit(1);
 }
 
-/****************************************************************
- * void warn(char *);
- *
- * Issue a warning message
- ****************************************************************/
 void warn(const char *msg)
 {
-  message("Warning: ", msg);
+  cerr << "Warning: " << msg << endl;
 }

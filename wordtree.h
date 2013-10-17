@@ -1,11 +1,7 @@
-/****************************************************************
+/*
  * wordtree.h - wordtree source file
  * by Michael Schaeffer
- *
- * Revision History:
- * 8/1/1996 - File created
- * 12/28/1996 - Extensive modifications for correctness
- ****************************************************************/
+ */
 
 #ifndef WORDTREE_H
 #define WORDTREE_H
@@ -26,8 +22,8 @@ public:
 
     char *operator()();
 
-    int letter_exists(char letter);
-    int is_word();
+    bool letter_exists(char letter);
+    bool is_word();
 
     iterator letter(char letter);
 
@@ -41,12 +37,12 @@ public:
 
 private:
   struct wt_node {
-    wt_node(char ch = '\0', int is_word = FALSE);
+    wt_node(char ch = '\0', bool is_word = false);
     ~wt_node();
     void dump();
 
     char _ch;
-    int    _is_word;
+    bool _is_word;
     wt_node *_child_node[26];
   };
 

@@ -1,11 +1,7 @@
-/****************************************************************
+/*
  * wordtree.cc - wordtree source file
  * by Michael Schaeffer
- *
- * Revision History:
- * 8/1/1996 - File created
- * 12/28/1996 - Extensive modifications for correctness
- ****************************************************************/
+ */
 
 #include "boggler.h"
 
@@ -24,7 +20,7 @@ void wordtree::insert_word(char *new_word) {
 
       if (current_node->_child_node[*current_char - 'a'] == NULL)
 	current_node->_child_node[*current_char - 'a'] = 
-	  new wt_node(*current_char, FALSE);
+	  new wt_node(*current_char, false);
       
       current_node = current_node->_child_node[*current_char - 'a'];
 
@@ -34,7 +30,7 @@ void wordtree::insert_word(char *new_word) {
     current_char++;
   }
 
-  current_node->_is_word = TRUE;
+  current_node->_is_word = true;
 };
 
 /****************************************************************
@@ -53,7 +49,7 @@ void wordtree::delete_word(char *new_word) {
     assert(current_node);
   }
 
-  current_node->_is_word = FALSE;
+  current_node->_is_word = false;
 };
 
 
@@ -154,12 +150,12 @@ void wordtree::iterator::initialize_prefix(char *prefix)
  * Determine if the passed letter is a valid continuation of
  * the prefix.
  ****************************************************************/
-int wordtree::iterator::letter_exists(char letter)
+bool wordtree::iterator::letter_exists(char letter)
 {
   if (letter >= 'a' && letter <= 'z')
     return (_current_node->_child_node[letter - 'a']) != NULL;
-  else
-    return FALSE;
+
+  return false;
 }
 
 /****************************************************************
@@ -167,7 +163,7 @@ int wordtree::iterator::letter_exists(char letter)
  *
  * Determine if we've reached a valid word yet
  ****************************************************************/
-int wordtree::iterator::is_word()
+bool wordtree::iterator::is_word()
 {
   return (_current_node->_is_word);
 }
@@ -201,7 +197,7 @@ wordtree::iterator wordtree::iterator::letter(char letter)
  *
  * Create a new wordtree node.
  **********************************************************************/
-wordtree::wt_node::wt_node(char ch, int is_word /* = FALSE */)
+wordtree::wt_node::wt_node(char ch, bool is_word /* = FALSE */)
 {
   _ch = ch;
   _is_word = is_word;
