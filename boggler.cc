@@ -17,27 +17,25 @@
 
 #include "boggler.h"
 
-char *dict_file    = NULL;     // The dictionary file to read
-char *puzzle_file  = NULL;     // The puzzle file to read
-char *ignore_file  = NULL;     // The file containing words to ignore
+char *solution_dict_file = NULL;     // The dictionary file to read
+char *puzzle_file        = NULL;     // The puzzle file to read
+char *ignore_file        = NULL;     // The file containing words to ignore
 
-int generate       = FALSE;    // action flag to generate the puzzle
-int solve          = FALSE;    // action flag to solve the puzzle
+int generate             = FALSE;    // action flag to generate the puzzle
 
-int help           = FALSE;    // display help information
-int write_puzzle   = FALSE;    // write the final puzzle
+int help                 = FALSE;    // display help information
+int write_puzzle         = FALSE;    // write the final puzzle
 
-int size           = 5;        // The size of the puzzle to be generated
+int size                 = 5;        // The size of the puzzle to be generated
 
-int seed           = -1;       // The random number seed
+int seed                 = -1;       // The random number seed
 
 // A set of definitions of long command line options
 option long_options[] = {
-  {"dictionary-file", 1, 0, 'd'},
+  {"solution-dictionary-file", 1, 0, 'd'},
   {"puzzle-file", 1, 0, 'p'},
   {"ignore-file", 1, 0, 'i'},
   {"generate", 0, 0, 'g'},
-  {"solve", 0, 0, 's'},
   {"write-puzzle", 0, 0, 'w'},
   {"size", 1, 0, 'S'},
   {"random-seed", 1, 0, 'r'},
@@ -54,7 +52,7 @@ Usage: boggler [options]\n\
 \n\
 Options:\n\
 \n\
---dictionary-file=<filename> (-d)  - Load a dictionary file\n\
+--solution-dictionary-file=<filename> (-d)  - Load a dictionary file and use it to solve the board\n\
 --puzzle-file=<filename> (-p) - Load a boggle from disk\n\
 --ignore-file=<filename> (-i) - Load a list of words to ignore in scoring\n\
 \n\
@@ -63,7 +61,6 @@ file is specified, they are read in the order dictionary, puzzle,\n\
 ignore\n\
 \n\
 --generate (-g) - Generate a boggle puzzle randomly\n\
---solve (-s) - Solve the boggle puzzle\n\
 --write-puzzle (-w) - Write the puzzle to standard output\n\
 \n\
 --size=<size> (-S) - Set the size of the boggle puzzle board\n\
@@ -82,15 +79,15 @@ void parse_options(int argc, char *argv[])
 
   while(optind < argc) {
     int option_index = 0;
-    char option = getopt_long(argc, argv, "d:p:i:gsS:hr:w",
+    char option = getopt_long(argc, argv, "d:p:i:gS:hr:w",
 			      long_options, &option_index);
 
     switch(option) {
     case 'd':
-      if (dict_file)
-	error("Two dictionary files cannot be specified");
+      if (solution_dict_file)
+           error("Two dictionary files cannot be specified");
 
-      dict_file = strdup(optarg);
+      solution_dict_file = strdup(optarg);
       break;
 
     case 'p':
@@ -115,10 +112,6 @@ void parse_options(int argc, char *argv[])
 	warn("The specified puzzle file will be ignored");
 
       generate = TRUE;
-      break;
-
-    case 's':
-      solve = TRUE;
       break;
 
     case 'S':
@@ -197,8 +190,10 @@ void do_command()
      if (generate) {
           board.set_size(size);
           board.shuffle();
+
      } else if (puzzle_file) {
           read_input(puzzle_file, board, "puzzle file");
+
      } else
           warn("No valid puzzle specified"); 
 
@@ -208,12 +203,11 @@ void do_command()
 
      // Solve the puzzle board, if requested.
 
-     if (solve) {
+     if (solution_dict_file) {
           wordtree dictionary;
           wordtree results;
 
-          if (dict_file)
-               read_input(dict_file, dictionary, "dictionary file");
+          read_input(solution_dict_file, dictionary, "dictionary file");
 
           wordtree ignored_words;
 
@@ -241,7 +235,7 @@ int main(int argc, char *argv[])
   do_command();
 
   // Delete the dynamic storage used by the command line options
-  delete dict_file;
+  delete solution_dict_file;
   delete puzzle_file;
   delete ignore_file;
 
