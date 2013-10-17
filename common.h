@@ -6,13 +6,7 @@
 #ifndef __COMMON_H
 #define __COMMON_H
 
-#include <getopt.h>
 #include <iostream>
-#include <fstream>
-#include <assert.h>
-#include <string.h>
-#include <stdlib.h>
-#include <time.h>
 
 using namespace std;
 

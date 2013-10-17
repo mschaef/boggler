@@ -3,6 +3,8 @@
  * by Michael Schaeffer
  */
 
+#include <stdlib.h>
+
 #include "common.h"
 
 /* Produce a random integer in the range [0, limit) */

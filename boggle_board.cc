@@ -3,6 +3,9 @@
  * by Michael Schaeffer
  */
 
+
+#include <assert.h>
+
 #include "common.h"
 #include "wordtree.h"
 #include "boggle_board.h"

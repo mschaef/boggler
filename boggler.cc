@@ -3,6 +3,12 @@
  * by Michael Schaeffer
  */
 
+#include <getopt.h>
+#include <time.h>
+#include <string.h>
+#include <stdlib.h>
+#include <fstream>
+
 #include "common.h"
 #include "wordtree.h"
 #include "boggle_board.h"

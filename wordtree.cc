@@ -3,6 +3,9 @@
  * by Michael Schaeffer
  */
 
+#include <assert.h>
+#include <string.h>
+
 #include "common.h"
 #include "wordtree.h"
 
