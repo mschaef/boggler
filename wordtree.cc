@@ -9,13 +9,8 @@
 #include "common.h"
 #include "wordtree.h"
 
-/****************************************************************
- * wordtree::insert_word(char *)
- *
- * Insert a word into a word tree, adding new nodes to the word
- * tree as necessary
- ****************************************************************/
-void wordtree::insert_word(char *new_word) {
+void wordtree::insert_word(char *new_word)
+{
   wt_node *current_node = &_node;
   char *current_char = new_word;
 
@@ -37,14 +32,10 @@ void wordtree::insert_word(char *new_word) {
   current_node->_is_word = true;
 };
 
-/****************************************************************
- * wordtree::delete_word(char *)
- *
- * Mark a tree node as not being a word. No tree nodes are deleted
- ****************************************************************/
-void wordtree::delete_word(char *new_word) {
+/* Ensure that the word, 'target_word' is not marked as a valid word. */
+void wordtree::delete_word(char *target_word) {
   wt_node *current_node = &_node;
-  char *current_char = new_word;
+  char *current_char = target_word;
 
   while (*current_char != '\0') {
     current_node = current_node->_child_node[*current_char - 'a'];
@@ -57,15 +48,13 @@ void wordtree::delete_word(char *new_word) {
 };
 
 
-/****************************************************************
- * void wordtree::delete_words(wordtree &)
- *
- * Mark a every word in the paramater word as being deleted
- ****************************************************************/
+/* Ensure that all words in `wt` are not marked as valid words. */
 void wordtree::delete_words(wordtree &wt) {
   delete_words(iterator(wt));
 };
 
+/* Ensure that all words traversed by iterator i ` are not marked as
+ * valid words. */
 void wordtree::delete_words(iterator i)
 {
   if (i.is_word())
@@ -76,20 +65,12 @@ void wordtree::delete_words(iterator i)
       delete_words(i.letter(ch));
 }
 
-/****************************************************************
- * void wordtree::dump()
- *
- * Make a dump of the structure of the tree for debugging purposes
- ****************************************************************/
+/* Dump the tree structure for debugging purposes. */
 void wordtree::dump() {
   _node.dump();
 };
 
-/****************************************************************
- * wordtree::print(ostream &)
- *
- * Print each word in a wordtree on the passed output stream.
- ****************************************************************/
+/* Print each word in a wordtree to the output stream. */
 void wordtree::print(ostream &o, iterator i)
 {
   if (i.is_word())
@@ -100,12 +81,9 @@ void wordtree::print(ostream &o, iterator i)
       print(o, i.letter(ch));
 }
 
-/****************************************************************
- * wordtree::iterator::iterator(wordtree &, char *);
- *
- * Create a new iterator rooted at the base of a wordtree, using
- * the specified string as a prefix.
- ****************************************************************/
+/* Create a new traversal iterator rooted at the base of a wordtree,
+ * using the specified string as a prefix.
+ */
 wordtree::iterator::iterator(wordtree &wt, char *prefix)
 {
   _current_node = &wt._node;
@@ -113,11 +91,9 @@ wordtree::iterator::iterator(wordtree &wt, char *prefix)
   initialize_prefix(prefix);
 }
 
-/****************************************************************
- * wordtree::iterator::iterator(wt_node *, char *);
- *
- * Create a new iterator rooted at the specified wordtree node
- ****************************************************************/
+/* Create a new traversal iterator rooted at the passed wt_node, and
+ * using the specified string as a prefix.
+ */
 wordtree::iterator::iterator(wt_node *wtn, char *prefix)
 {
   assert(wtn);
@@ -126,13 +102,13 @@ wordtree::iterator::iterator(wt_node *wtn, char *prefix)
   initialize_prefix(prefix);
 };
 
-/****************************************************************
- * wordtree::iterator::initialize_prefiz(char *)
+/*
+ * wordtree::iterator::initialize_prefix(char *)
  *
  * Initialize the prefix of an iterator.  The prefix is the
- * string represented by the iterator, and is used when a word node
- * is found to extract the word.
- ****************************************************************/
+ * string represented by the nodes that have been traversed
+ * by the iterator to that point.
+ */
 void wordtree::iterator::initialize_prefix(char *prefix)
 {
   // Null out the string, and append the passed prefix
@@ -148,12 +124,9 @@ void wordtree::iterator::initialize_prefix(char *prefix)
   _prefix[length + 1] = '\0';
 };
 
-/****************************************************************
- * wordtree::iterator::letter_exists(char)
- *
- * Determine if the passed letter is a valid continuation of
+/* Determine if a letter is a valid continuation of
  * the prefix.
- ****************************************************************/
+ */
 bool wordtree::iterator::letter_exists(char letter)
 {
   if (letter >= 'a' && letter <= 'z')
@@ -162,33 +135,21 @@ bool wordtree::iterator::letter_exists(char letter)
   return false;
 }
 
-/****************************************************************
- * wordtree::iterator::is_word()
- *
- * Determine if we've reached a valid word yet
- ****************************************************************/
+/* Determine if the iterator represents a traversal of a valid word. */
 bool wordtree::iterator::is_word()
 {
   return (_current_node->_is_word);
 }
 
-/****************************************************************
- * wordtree::iterator::operator()()
- *
- * Return a pointer to the current prefix.  This string must be
+/* Return a pointer to the current prefix.  This string must be
  * used before the iterator is destructed.
- ****************************************************************/
+ */
 char *wordtree::iterator::operator()()
 {
   return _prefix;
 }
 
-/****************************************************************
- * wordtree::iterator::letter(char)
- *
- * Return a new iterator rooted at the letter passed as a
- * paramater
- ****************************************************************/
+/* Return a new traversal iterator rooted at the specified letter. */
 wordtree::iterator wordtree::iterator::letter(char letter)
 {
   assert(letter_exists(letter));
@@ -196,37 +157,23 @@ wordtree::iterator wordtree::iterator::letter(char letter)
   return iterator(_current_node->_child_node[letter - 'a'], _prefix);
 }
 
-/**********************************************************************
- * wordtree::wt_node::wt_node(char, int)
- *
- * Create a new wordtree node.
- **********************************************************************/
 wordtree::wt_node::wt_node(char ch, bool is_word /* = FALSE */)
 {
   _ch = ch;
   _is_word = is_word;
 
-  // Initialize each child node to null
   for(char ch = 'a'; ch <= 'z'; ch++)
     _child_node[ch - 'a'] = NULL;
 };
 
-/**********************************************************************
- * wordtree::wt_node::wt_node(char, int)
- *
- * Destroy the wordtree node by destroying all subtrees
- **********************************************************************/
 wordtree::wt_node::~wt_node() {
   for(char ch = 'a'; ch <= 'z'; ch++)
     delete _child_node[ch - 'a'];
 };
 
-/**********************************************************************
- * wordtree::wt_node::dump()
- *
- * Make a dump of the structure of the tree for debugging purposes,
+/* Make a dump of the structure of the tree for debugging purposes,
  * doing a preorder traversal of the wordtree.
- **********************************************************************/
+ */
 void wordtree::wt_node::dump() {
   if (_is_word)
     cout << this << " *(";
@@ -244,12 +191,9 @@ void wordtree::wt_node::dump() {
       _child_node[ch - 'a']->dump();
 }
 
-/****************************************************************
- * ostream &operator<<(ostream &, wordtree &);
- *
- * Print each word in a wordtree on the passed output stream.
- * wordtree::print1 does the actual work.
- ****************************************************************/
+/* Print each word in a wordtree on the passed output stream.
+ * wordtree::print does the actual work.
+ */
 ostream &operator<<(ostream &o, wordtree &wt)
 {
      o << "{";
@@ -261,11 +205,7 @@ ostream &operator<<(ostream &o, wordtree &wt)
      return o;
 }
 
-/****************************************************************
- * ostream &operator<<(ostream &, wordtree &);
- *
- * load a dictionary file into a wordtree
- ****************************************************************/
+/* Load a list of words, delimtied with braces, into a wordtree. */
 istream &operator>>(istream &i, wordtree &wt)
 {
   char word_buf[MAX_WORD_SIZE];

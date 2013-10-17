@@ -61,12 +61,9 @@ ignore\n\
 --size=<size> (-S) - Set the size of the boggle puzzle board\n\
 --random-seed=<number> (-r) - Set the seed value for rand()";
 
-/****************************************************************
- * int expect(int, char*[])
- *
- * Scan and parse the command line options, adjusting the global
+/* Scan and parse the command line options, adjusting the global
  * control variables appropriately
- ****************************************************************/
+ */
 void parse_options(int argc, char *argv[])
 {
   // Reset getopt's state.
@@ -140,12 +137,7 @@ void parse_options(int argc, char *argv[])
   }
 }
 
-/****************************************************************
- * template<class T>
- * int read_input(const char *filename, T &)
- *
- * Read an input object from either a file or standard input.
- ****************************************************************/
+/* Read an input object from either a file or standard input. */
 template<class T>
 void read_input(const char *fn,  T &object, const char *filedesc)
 {
@@ -164,11 +156,7 @@ void read_input(const char *fn,  T &object, const char *filedesc)
 }
 
 
-/****************************************************************
- * void do_command()
- *
- * Execute the operations requested by the user
- ****************************************************************/
+/* Execute the operations requested by the user */
 void do_command()
 {
      if (help) {
@@ -218,9 +206,6 @@ void do_command()
      }
 }
 
-/****************************************************************
- * int main(int, char *[])
- ****************************************************************/
 int main(int argc, char *argv[])
 {
   // Parse the command line options
