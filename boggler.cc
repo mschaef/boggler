@@ -27,7 +27,7 @@ char *solution_dict_file = NULL;     // The dictionary file to read
 char *puzzle_file        = NULL;     // The puzzle file to read
 char *ignore_file        = NULL;     // The file containing words to ignore
 
-bool generate            = false;    // action flag to generate the puzzle
+bool generate_puzzle            = false;    // action flag to generate the puzzle
 bool help                = false;    // display help information
 bool write_puzzle        = false;    // write the final puzzle
 
@@ -96,7 +96,7 @@ void parse_options(int argc, char *argv[])
       if (puzzle_file)
 	error("Two puzzle files cannot be specified");
 
-      if (generate)
+      if (generate_puzzle)
     	warn("The specified puzzle file will be ignored");
 
       puzzle_file = strdup(optarg);
@@ -113,7 +113,7 @@ void parse_options(int argc, char *argv[])
       if (puzzle_file)
 	warn("The specified puzzle file will be ignored");
 
-      generate = true;
+      generate_puzzle = true;
       break;
 
     case 'S':
@@ -175,12 +175,12 @@ void do_command()
      }
 
      boggle_board board;
-    
+
      // Initalize the random number generator
      srand((seed == -1) ? time(0) : seed);
 
      // Generate or load a puzzle board.
-     if (generate) {
+     if (generate_puzzle) {
           board.set_size(size);
           board.shuffle();
 
@@ -188,7 +188,7 @@ void do_command()
           read_input(puzzle_file, board, "puzzle file");
 
      } else
-          warn("No valid puzzle specified"); 
+          warn("No valid puzzle specified");
 
      // write the puzzle board in use.
      if (write_puzzle)
@@ -208,7 +208,7 @@ void do_command()
                read_input(ignore_file, ignored_words, "puzzle file");
 
                dictionary.delete_words(ignored_words);
-          } 
+          }
 
           board.find_words(dictionary, results);
 
@@ -231,5 +231,3 @@ int main(int argc, char *argv[])
 
   return 0;
 }
-
-
