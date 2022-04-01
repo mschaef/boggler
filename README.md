@@ -25,3 +25,10 @@ The general input/output format was roughly inspired to interoperate
 with a paleolithic version of [Tcl/Tk](http://www.tcl.tk/). My
 original plan had been to put a GUI front end on `boggler`, and you
 can see the residual code from that effort in the `tkboggler` file.
+
+# Licensing and Copyright
+
+Copyright (c) Michael Schaeffer
+
+Licened under the Eclipse Public Licence v2.0, found at the root of
+this repository in the [`LICENSE`](LICENSE) file.

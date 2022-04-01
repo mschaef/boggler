@@ -1,0 +1,5 @@
+*.o
+*~
+boggler
+render.png
+.DS_Store
